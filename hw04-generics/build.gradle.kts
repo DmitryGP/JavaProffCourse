@@ -4,5 +4,6 @@ dependencies {
     testImplementation ("org.assertj:assertj-core")
     testImplementation ("org.mockito:mockito-core")
     testImplementation ("org.mockito:mockito-junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 

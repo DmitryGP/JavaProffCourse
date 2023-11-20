@@ -1,6 +1,5 @@
 package ru.dgp;
 
-
 public class Customer {
     private final long id;
     private String name;
