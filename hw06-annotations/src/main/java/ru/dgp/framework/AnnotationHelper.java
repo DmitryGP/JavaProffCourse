@@ -7,14 +7,15 @@ import java.util.List;
 
 public class AnnotationHelper {
 
-    private AnnotationHelper(){}
+    private AnnotationHelper() {}
+
     public static Method[] getAnnotatedMethods(Class<?> aClass, Class<? extends Annotation> annotation) {
         Method[] methods = aClass.getDeclaredMethods();
 
         List<Method> beforeMethods = new ArrayList<>();
 
         for (int i = 0; i < methods.length; i++) {
-            if(methods[i].isAnnotationPresent(annotation)){
+            if (methods[i].isAnnotationPresent(annotation)) {
                 beforeMethods.add(methods[i]);
             }
         }
