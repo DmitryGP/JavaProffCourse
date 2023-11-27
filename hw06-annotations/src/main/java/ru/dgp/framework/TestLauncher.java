@@ -77,14 +77,18 @@ public final class TestLauncher {
 
     private static class TestState {
 
-        private String name;
-        private State state;
-        private Exception exception;
+        private final String name;
+        private final State state;
+        private final Exception exception;
+
+        private final String toString;
 
         public TestState(String name, State state, Exception exc) {
             this.name = name;
             this.state = state;
             this.exception = exc;
+
+            toString = this.name + "\t" + this.state + "\t" + (this.exception != null ? this.exception.toString() : "");
         }
 
         public String getName() {
@@ -101,7 +105,7 @@ public final class TestLauncher {
 
         @Override
         public String toString() {
-            return this.name + "\t" + this.state + "\t" + (this.exception != null ? this.exception.toString() : "");
+            return toString;
         }
     }
 }
