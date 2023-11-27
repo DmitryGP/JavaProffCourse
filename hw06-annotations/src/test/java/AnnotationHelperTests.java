@@ -1,7 +1,3 @@
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import ru.dgp.framework.AnnotationHelper;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,45 +6,46 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import ru.dgp.framework.AnnotationHelper;
 
-public class AnnotationHelperTests {
+class AnnotationHelperTests {
 
     @Test
-    public void shouldReturnMethodsWithNeededAnnotation(){
+    void shouldReturnMethodsWithNeededAnnotation() {
         Method[] methods = AnnotationHelper.getAnnotatedMethods(A.class, Annotation1.class);
 
         Assertions.assertEquals(2, methods.length);
 
         List<String> names = Arrays.stream(methods).map(Method::getName).collect(Collectors.toList());
 
-        Assertions.assertTrue(names.stream().filter(n-> n == "doSomething1").count() == 1);
-        Assertions.assertTrue(names.stream().filter(n-> n == "doSomething3").count() == 1);
-        Assertions.assertTrue(names.stream().filter(n-> n == "doSomething2").count() == 0);
+        Assertions.assertEquals(
+                1, names.stream().filter(n -> n == "doSomething1").count());
+        Assertions.assertEquals(
+                1, names.stream().filter(n -> n == "doSomething3").count());
+        Assertions.assertEquals(
+                0, names.stream().filter(n -> n == "doSomething2").count());
     }
 
-    public class A{
+    class A {
 
         @Annotation1
-        public void doSomething1(){}
+        public void doSomething1() {}
 
         @Annotation2
-        public void doSomething2(){}
+        public void doSomething2() {}
 
         @Annotation1
         @Annotation2
-        public void doSomething3(){}
-
+        public void doSomething3() {}
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface Annotation1 {
-
-    }
+    @interface Annotation1 {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface Annotation2 {
-
-    }
+    @interface Annotation2 {}
 }
