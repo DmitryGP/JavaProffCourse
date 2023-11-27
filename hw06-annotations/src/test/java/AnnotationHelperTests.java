@@ -28,6 +28,13 @@ class AnnotationHelperTests {
                 0, names.stream().filter(n -> n == "doSomething2").count());
     }
 
+    @Test
+    void shouldReturnEmptyArrayOfMethodsIfNoAnnotaedMethods() {
+        Method[] methods = AnnotationHelper.getAnnotatedMethods(A.class, Annotation3.class);
+
+        Assertions.assertEquals(0, methods.length);
+    }
+
     class A {
 
         @Annotation1
@@ -48,4 +55,8 @@ class AnnotationHelperTests {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @interface Annotation2 {}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface Annotation3 {}
 }
