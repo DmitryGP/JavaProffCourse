@@ -16,7 +16,9 @@ public final class TestLauncher {
 
     private TestLauncher() {}
 
-    public static void launch(Class<?> testClass) {
+    public static void launch(String testClassName) throws ClassNotFoundException {
+
+        Class<?> testClass = Class.forName(testClassName);
 
         Method[] beforeMethods = AnnotationHelper.getAnnotatedMethods(testClass, Before.class);
         Method[] afterMethods = AnnotationHelper.getAnnotatedMethods(testClass, After.class);
@@ -37,6 +39,12 @@ public final class TestLauncher {
         logger.info("Statistics for test launching for class {}: ", testClass.getName());
 
         testStates.stream().forEach(s -> logger.info(s.toString()));
+
+        long okCount = testStates.stream().filter(s -> s.state == State.OK).count();
+        long failedCount =
+                testStates.stream().filter(s -> s.state == State.FAILED).count();
+
+        logger.info("TOTAL : {} TESTS, SUCCEED: {}, FAILED: {}", testStates.size(), okCount, failedCount);
     }
 
     private static <T> TestState launchTest(
@@ -93,7 +101,7 @@ public final class TestLauncher {
 
         @Override
         public String toString() {
-            return this.name + "\t" + this.state + "\t" + this.exception.toString();
+            return this.name + "\t" + this.state + "\t" + (this.exception != null ? this.exception.toString() : "");
         }
     }
 }
