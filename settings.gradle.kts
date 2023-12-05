@@ -25,3 +25,6 @@ pluginManagement {
 }
 include("hw04-generics")
 include("hw06-annotations")
+include("hw08-gc")
+include("hw08-gc:homework")
+findProject(":hw08-gc:homework")?.name = "homework"

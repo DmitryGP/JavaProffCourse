@@ -1,0 +1,11 @@
+256m	spend msec:23400, sec:23
+512m	spend msec:17510, sec:17
+768m	spend msec:16263, sec:16
+1g	spend msec:15479, sec:15
+1280m	spend msec:14977, sec:14
+1536m	spend msec:14540, sec:14
+2g	spend msec:14477, sec:14
+2560m	spend msec:14724, sec:14
+3g	spend msec:15264, sec:15
+
+Вывод: оптимальный размер хипа - 1,5Гб
