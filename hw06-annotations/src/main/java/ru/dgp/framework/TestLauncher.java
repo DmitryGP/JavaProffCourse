@@ -20,14 +20,14 @@ public final class TestLauncher {
 
         Class<?> testClass = Class.forName(testClassName);
 
-        Method[] beforeMethods = AnnotationHelper.getAnnotatedMethods(testClass, Before.class);
-        Method[] afterMethods = AnnotationHelper.getAnnotatedMethods(testClass, After.class);
-        Method[] tests = AnnotationHelper.getAnnotatedMethods(testClass, Test.class);
+        List<Method> beforeMethods = AnnotationHelper.getAnnotatedMethods(testClass, Before.class);
+        List<Method> afterMethods = AnnotationHelper.getAnnotatedMethods(testClass, After.class);
+        List<Method> tests = AnnotationHelper.getAnnotatedMethods(testClass, Test.class);
 
         List<TestState> testStates = new ArrayList<>();
 
-        for (int i = 0; i < tests.length; i++) {
-            TestState state = launchTest(testClass, tests[i], beforeMethods, afterMethods);
+        for (int i = 0; i < tests.size(); i++) {
+            TestState state = launchTest(testClass, tests.get(i), beforeMethods, afterMethods);
 
             testStates.add(state);
         }
@@ -48,20 +48,20 @@ public final class TestLauncher {
     }
 
     private static <T> TestState launchTest(
-            Class<T> testClass, Method test, Method[] beforeMethods, Method[] afterMethods) {
+            Class<T> testClass, Method test, List<Method> beforeMethods, List<Method> afterMethods) {
 
         try {
             Constructor<T> cnstrtr = testClass.getDeclaredConstructor();
             Object o = cnstrtr.newInstance();
 
-            for (int i = 0; i < beforeMethods.length; i++) {
-                beforeMethods[i].invoke(o);
+            for (int i = 0; i < beforeMethods.size(); i++) {
+                beforeMethods.get(i).invoke(o);
             }
 
             test.invoke(o);
 
-            for (int i = 0; i < afterMethods.length; i++) {
-                afterMethods[i].invoke(o);
+            for (int i = 0; i < afterMethods.size(); i++) {
+                afterMethods.get(i).invoke(o);
             }
 
             return new TestState(test.getName(), State.OK, null);
@@ -88,7 +88,8 @@ public final class TestLauncher {
             this.state = state;
             this.exception = exc;
 
-            toString = this.name + "\t" + this.state + "\t" + (this.exception != null ? this.exception.toString() : "");
+            toString = "\t" + this.name + "\t" + this.state + "\t"
+                    + (this.exception != null ? this.exception.toString() : "");
         }
 
         public String getName() {

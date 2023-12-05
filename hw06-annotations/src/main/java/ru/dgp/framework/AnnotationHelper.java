@@ -9,7 +9,7 @@ public class AnnotationHelper {
 
     private AnnotationHelper() {}
 
-    public static Method[] getAnnotatedMethods(Class<?> aClass, Class<? extends Annotation> annotation) {
+    public static List<Method> getAnnotatedMethods(Class<?> aClass, Class<? extends Annotation> annotation) {
         Method[] methods = aClass.getDeclaredMethods();
 
         List<Method> beforeMethods = new ArrayList<>();
@@ -20,6 +20,6 @@ public class AnnotationHelper {
             }
         }
 
-        return beforeMethods.toArray(new Method[0]);
+        return beforeMethods;
     }
 }

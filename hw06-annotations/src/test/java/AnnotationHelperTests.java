@@ -3,7 +3,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
@@ -14,11 +13,11 @@ class AnnotationHelperTests {
 
     @Test
     void shouldReturnMethodsWithNeededAnnotation() {
-        Method[] methods = AnnotationHelper.getAnnotatedMethods(A.class, Annotation1.class);
+        List<Method> methods = AnnotationHelper.getAnnotatedMethods(A.class, Annotation1.class);
 
-        Assertions.assertEquals(2, methods.length);
+        Assertions.assertEquals(2, methods.size());
 
-        List<String> names = Arrays.stream(methods).map(Method::getName).collect(Collectors.toList());
+        List<String> names = methods.stream().map(Method::getName).collect(Collectors.toList());
 
         Assertions.assertEquals(
                 1, names.stream().filter(n -> n == "doSomething1").count());
@@ -30,9 +29,9 @@ class AnnotationHelperTests {
 
     @Test
     void shouldReturnEmptyArrayOfMethodsIfNoAnnotaedMethods() {
-        Method[] methods = AnnotationHelper.getAnnotatedMethods(A.class, Annotation3.class);
+        List<Method> methods = AnnotationHelper.getAnnotatedMethods(A.class, Annotation3.class);
 
-        Assertions.assertEquals(0, methods.length);
+        Assertions.assertEquals(0, methods.size());
     }
 
     class A {
