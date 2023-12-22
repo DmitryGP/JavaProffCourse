@@ -18,7 +18,13 @@ class SlotManagerImplTest {
     void loadNotesToManager() {
 
         List<Banknote> notes = List.of(
-                new Note500(), new Note500(), new Note500(), new Note100(), new Note100(), new Note50(), new Note50());
+                Banknote.NOTE500,
+                Banknote.NOTE500,
+                Banknote.NOTE500,
+                Banknote.NOTE100,
+                Banknote.NOTE100,
+                Banknote.NOTE50,
+                Banknote.NOTE50);
 
         slotManager.load(notes);
 
@@ -28,7 +34,13 @@ class SlotManagerImplTest {
     @Test
     void pollNotes() throws NotEnoughBanknotesException {
         List<Banknote> notes = List.of(
-                new Note500(), new Note500(), new Note500(), new Note100(), new Note100(), new Note50(), new Note50());
+                Banknote.NOTE500,
+                Banknote.NOTE500,
+                Banknote.NOTE500,
+                Banknote.NOTE100,
+                Banknote.NOTE100,
+                Banknote.NOTE50,
+                Banknote.NOTE50);
 
         slotManager.load(notes);
 
@@ -47,7 +59,13 @@ class SlotManagerImplTest {
     @Test
     void throwExceptionWhenCantPollTheAmount() throws NotEnoughBanknotesException {
         List<Banknote> notes = List.of(
-                new Note500(), new Note500(), new Note500(), new Note100(), new Note100(), new Note50(), new Note50());
+                Banknote.NOTE500,
+                Banknote.NOTE500,
+                Banknote.NOTE500,
+                Banknote.NOTE100,
+                Banknote.NOTE100,
+                Banknote.NOTE50,
+                Banknote.NOTE50);
 
         slotManager.load(notes);
 

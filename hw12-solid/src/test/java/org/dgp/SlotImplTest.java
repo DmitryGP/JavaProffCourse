@@ -16,7 +16,7 @@ class SlotImplTest {
 
     @Test
     void putSomeNotes() {
-        List<Banknote> notes = List.of(new Note100(), new Note100(), new Note100());
+        List<Banknote> notes = List.of(Banknote.NOTE100, Banknote.NOTE100, Banknote.NOTE100);
 
         Assertions.assertEquals(0, slot.getNotesCount());
 
@@ -27,7 +27,7 @@ class SlotImplTest {
 
     @Test
     void pollNotes() {
-        List<Banknote> notes = List.of(new Note100(), new Note100(), new Note100());
+        List<Banknote> notes = List.of(Banknote.NOTE100, Banknote.NOTE100, Banknote.NOTE100);
 
         slot.put(notes);
 
@@ -42,7 +42,7 @@ class SlotImplTest {
 
     @Test
     void pollMoreThanHave() {
-        List<Banknote> notes = List.of(new Note100(), new Note100(), new Note100());
+        List<Banknote> notes = List.of(Banknote.NOTE100, Banknote.NOTE100, Banknote.NOTE100);
 
         slot.put(notes);
 

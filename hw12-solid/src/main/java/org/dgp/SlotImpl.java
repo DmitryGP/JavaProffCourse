@@ -18,13 +18,9 @@ public class SlotImpl implements Slot {
     public List<Banknote> poll(int count) {
         List<Banknote> resultNotes = new ArrayList<>();
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count && !noteContainer.isEmpty(); i++) {
             Banknote note = noteContainer.poll();
-            if (note != null) {
-                resultNotes.add(note);
-            } else {
-                break;
-            }
+            resultNotes.add(note);
         }
         return resultNotes;
     }

@@ -1,6 +1,5 @@
 package org.dgp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CashMachineImpl implements CashMachine {
@@ -12,10 +11,10 @@ public class CashMachineImpl implements CashMachine {
     }
 
     @Override
-    public List<Banknote> get(int amountToGet) throws NotEnoughBanknotesException {
+    public List<Banknote> get(int amountToGet) throws NotEnoughBanknotesException, IlligibleAmountException {
 
-        if (amountToGet <= 0) {
-            return new ArrayList<>();
+        if (amountToGet < 0) {
+            throw new IlligibleAmountException();
         }
 
         return slotManager.tryPoll(amountToGet);

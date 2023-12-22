@@ -16,19 +16,19 @@ public class Application {
         List<Banknote> notes = new ArrayList<>();
 
         for (int i = 0; i < 50; i++) {
-            notes.add(new Note500());
+            notes.add(Banknote.NOTE500);
         }
 
         for (int i = 0; i < 70; i++) {
-            notes.add(new Note100());
+            notes.add(Banknote.NOTE100);
         }
 
         for (int i = 0; i < 100; i++) {
-            notes.add(new Note50());
+            notes.add(Banknote.NOTE50);
         }
 
         for (int i = 0; i < 150; i++) {
-            notes.add(new Note10());
+            notes.add(Banknote.NOTE10);
         }
 
         cashMachine.load(notes);
@@ -61,6 +61,11 @@ public class Application {
         } catch (NotEnoughBanknotesException exc) {
             log.atError()
                     .setMessage("Not enough banknotes to get {}")
+                    .addArgument(amountToGet)
+                    .log();
+        } catch (IlligibleAmountException exc) {
+            log.atError()
+                    .setMessage("Illigible entered amount. {}")
                     .addArgument(amountToGet)
                     .log();
         }

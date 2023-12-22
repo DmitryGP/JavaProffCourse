@@ -1,26 +1,25 @@
 package org.dgp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SlotManagerImpl implements SlotManager {
 
     private final Map<Integer, Slot> slots = new HashMap<>();
 
-    private final int[] denominations = new int[] {500, 100, 50, 10};
+    private final List<Integer> denominations = Arrays.stream(Banknote.values())
+            .map(Banknote::getDenomination)
+            .sorted((a, b) -> b - a)
+            .toList();
 
     public SlotManagerImpl() {
         initializeSlots();
     }
 
     private void initializeSlots() {
-        slots.put(new Note10().getDenomination(), new SlotImpl());
-        slots.put(new Note50().getDenomination(), new SlotImpl());
-        slots.put(new Note100().getDenomination(), new SlotImpl());
-        slots.put(new Note500().getDenomination(), new SlotImpl());
+        for (Integer note : denominations) {
+            slots.put(note, new SlotImpl());
+        }
     }
 
     @Override
@@ -43,18 +42,18 @@ public class SlotManagerImpl implements SlotManager {
     }
 
     private int tryToCalculateNotesCount(int amountToGet, Map<Integer, Integer> noteToCountMap) {
-        for (int i = 0; i < denominations.length; i++) {
-            int count = amountToGet / denominations[i];
+        for (int i = 0; i < denominations.size(); i++) {
+            int count = amountToGet / denominations.get(i);
 
             if (count > 0) {
-                var slot = slots.get(denominations[i]);
+                var slot = slots.get(denominations.get(i));
 
                 if (count > slot.getNotesCount()) {
                     count = slot.getNotesCount();
                 }
 
-                noteToCountMap.put(denominations[i], count);
-                amountToGet -= count * denominations[i];
+                noteToCountMap.put(denominations.get(i), count);
+                amountToGet -= count * denominations.get(i);
             }
         }
         return amountToGet;
