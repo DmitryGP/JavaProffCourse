@@ -1,20 +1,19 @@
 package org.dgp.processor;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
+import java.time.LocalDateTime;
+import java.time.Month;
 import org.dgp.model.Message;
 import org.dgp.processor.homework.EvenSecondException;
 import org.dgp.processor.homework.EvenSecondExceptionProcessor;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.time.Month;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-public class EvenSecondExceptionProcessorTest {
+class EvenSecondExceptionProcessorTest {
 
     @Test
-    public void throwExceptionWhenEvenSecond() {
+    void throwExceptionWhenEvenSecond() {
         LocalDateTime dateTime = LocalDateTime.of(2024, Month.JANUARY, 3, 10, 10, 12);
 
         var processor = new EvenSecondExceptionProcessor(() -> dateTime);
@@ -26,7 +25,7 @@ public class EvenSecondExceptionProcessorTest {
     }
 
     @Test
-    public void doesntThrowExceptionWhenOddSecond() throws EvenSecondException {
+    void doesntThrowExceptionWhenOddSecond() throws EvenSecondException {
         LocalDateTime dateTime = LocalDateTime.of(2024, Month.JANUARY, 3, 10, 10, 11);
 
         var processor = new EvenSecondExceptionProcessor(() -> dateTime);

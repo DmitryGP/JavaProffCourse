@@ -1,11 +1,10 @@
 package org.dgp.listener.homework;
 
-import org.dgp.listener.Listener;
-import org.dgp.model.Message;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.dgp.listener.Listener;
+import org.dgp.model.Message;
 
 public class HistoryListener implements Listener, HistoryReader {
 
@@ -20,7 +19,7 @@ public class HistoryListener implements Listener, HistoryReader {
     public Optional<Message> findMessageById(long id) {
         var state = messageStates.get(Long.valueOf(id));
 
-        if(state != null) {
+        if (state != null) {
             return createMessage(state);
         }
 

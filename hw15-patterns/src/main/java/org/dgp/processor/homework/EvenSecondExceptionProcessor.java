@@ -1,11 +1,8 @@
 package org.dgp.processor.homework;
 
+import java.time.LocalDateTime;
 import org.dgp.model.Message;
 import org.dgp.processor.Processor;
-import org.dgp.processor.homework.DateTimeProvider;
-import org.dgp.processor.homework.EvenSecondException;
-
-import java.time.LocalDateTime;
 
 public class EvenSecondExceptionProcessor implements Processor {
 
@@ -14,11 +11,12 @@ public class EvenSecondExceptionProcessor implements Processor {
     public EvenSecondExceptionProcessor(DateTimeProvider dateTimeProvider) {
         this.dateTimeProvider = dateTimeProvider;
     }
+
     @Override
     public Message process(Message message) throws EvenSecondException {
         LocalDateTime dateTime = dateTimeProvider.getDate();
 
-        if(dateTime.getSecond() % 2 == 0) {
+        if (dateTime.getSecond() % 2 == 0) {
             throw new EvenSecondException();
         }
 

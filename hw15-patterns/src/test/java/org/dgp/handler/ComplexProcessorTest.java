@@ -1,25 +1,23 @@
 package org.dgp.handler;
 
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.dgp.listener.Listener;
-import org.dgp.model.Message;
-import org.dgp.processor.Processor;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.dgp.listener.Listener;
+import org.dgp.model.Message;
+import org.dgp.processor.Processor;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class ComplexProcessorTest {
 
     @Test
     @DisplayName("Тестируем вызовы процессоров")
     void handleProcessorsTest() throws Exception {
-        //given
+        // given
         var message = new Message.Builder(1L).field7("field7").build();
 
         var processor1 = mock(Processor.class);
@@ -30,13 +28,12 @@ class ComplexProcessorTest {
 
         var processors = List.of(processor1, processor2);
 
-        var complexProcessor = new ComplexProcessor(processors, (ex) -> {
-        });
+        var complexProcessor = new ComplexProcessor(processors, (ex) -> {});
 
-        //when
+        // when
         var result = complexProcessor.handle(message);
 
-        //then
+        // then
         verify(processor1).process(message);
         verify(processor2).process(message);
         assertThat(result).isEqualTo(message);
@@ -45,7 +42,7 @@ class ComplexProcessorTest {
     @Test
     @DisplayName("Тестируем обработку исключения")
     void handleExceptionTest() throws Exception {
-        //given
+        // given
         var message = new Message.Builder(1L).field8("field8").build();
 
         var processor1 = mock(Processor.class);
@@ -60,10 +57,10 @@ class ComplexProcessorTest {
             throw new TestException(ex.getMessage());
         });
 
-        //when
+        // when
         assertThatExceptionOfType(TestException.class).isThrownBy(() -> complexProcessor.handle(message));
 
-        //then
+        // then
         verify(processor1, times(1)).process(message);
         verify(processor2, never()).process(message);
     }
@@ -71,22 +68,21 @@ class ComplexProcessorTest {
     @Test
     @DisplayName("Тестируем уведомления")
     void notifyTest() {
-        //given
+        // given
         var message = new Message.Builder(1L).field9("field9").build();
 
         var listener = mock(Listener.class);
 
-        var complexProcessor = new ComplexProcessor(new ArrayList<>(), (ex) -> {
-        });
+        var complexProcessor = new ComplexProcessor(new ArrayList<>(), (ex) -> {});
 
         complexProcessor.addListener(listener);
 
-        //when
+        // when
         complexProcessor.handle(message);
         complexProcessor.removeListener(listener);
         complexProcessor.handle(message);
 
-        //then
+        // then
         verify(listener, times(1)).onUpdated(message);
     }
 

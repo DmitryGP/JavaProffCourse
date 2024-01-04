@@ -9,7 +9,7 @@ public class ReplaceFields1112Processor implements Processor {
 
         var builder = new Message.Builder(message.getId());
 
-        var newMessage = builder.field1(message.getField1())
+        return builder.field1(message.getField1())
                 .field2(message.getField2())
                 .field3(message.getField3())
                 .field4(message.getField4())
@@ -23,7 +23,5 @@ public class ReplaceFields1112Processor implements Processor {
                 .field12(message.getField11())
                 .field13(message.getField13())
                 .build();
-
-        return newMessage;
     }
 }

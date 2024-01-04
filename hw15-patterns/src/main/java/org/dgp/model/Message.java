@@ -3,6 +3,7 @@ package org.dgp.model;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("java:S107")
 public class Message {
     private final long id;
     private final String field1;
@@ -19,7 +20,21 @@ public class Message {
     private final String field12;
     private final ObjectForMessage field13;
 
-    private Message(long id, String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9, String field10, String field11, String field12, ObjectForMessage field13) {
+    private Message(
+            long id,
+            String field1,
+            String field2,
+            String field3,
+            String field4,
+            String field5,
+            String field6,
+            String field7,
+            String field8,
+            String field9,
+            String field10,
+            String field11,
+            String field12,
+            ObjectForMessage field13) {
         this.id = id;
         this.field1 = field1;
         this.field2 = field2;
@@ -108,31 +123,34 @@ public class Message {
     }
 
     public Builder toBuilder() {
-        return new Builder(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13);
+        return new Builder(
+                id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12,
+                field13);
     }
 
     @Override
     public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", field1='" + field1 + '\'' +
-                ", field2='" + field2 + '\'' +
-                ", field3='" + field3 + '\'' +
-                ", field4='" + field4 + '\'' +
-                ", field5='" + field5 + '\'' +
-                ", field6='" + field6 + '\'' +
-                ", field7='" + field7 + '\'' +
-                ", field8='" + field8 + '\'' +
-                ", field9='" + field9 + '\'' +
-                ", field10='" + field10 + '\'' +
-                ", field11='" + field11 + '\'' +
-                ", field12='" + field12 + '\'' +
-                ", field13='" + field13 + '\'' +
-                '}';
+        return "Message{" + "id="
+                + id + ", field1='"
+                + field1 + '\'' + ", field2='"
+                + field2 + '\'' + ", field3='"
+                + field3 + '\'' + ", field4='"
+                + field4 + '\'' + ", field5='"
+                + field5 + '\'' + ", field6='"
+                + field6 + '\'' + ", field7='"
+                + field7 + '\'' + ", field8='"
+                + field8 + '\'' + ", field9='"
+                + field9 + '\'' + ", field10='"
+                + field10 + '\'' + ", field11='"
+                + field11 + '\'' + ", field12='"
+                + field12 + '\'' + ", field13='"
+                + field13 + '\'' + '}';
     }
 
     public State save() {
-        return new State(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13);
+        return new State(
+                id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12,
+                field13);
     }
 
     public class State {
@@ -151,7 +169,21 @@ public class Message {
         private final String field12;
         private final ObjectForMessage field13;
 
-        private State(long id, String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9, String field10, String field11, String field12, ObjectForMessage field13) {
+        private State(
+                long id,
+                String field1,
+                String field2,
+                String field3,
+                String field4,
+                String field5,
+                String field6,
+                String field7,
+                String field8,
+                String field9,
+                String field10,
+                String field11,
+                String field12,
+                ObjectForMessage field13) {
             this.id = id;
             this.field1 = field1;
             this.field2 = field2;
@@ -227,22 +259,21 @@ public class Message {
 
         @Override
         public String toString() {
-            return "State for message{" +
-                    "id=" + id +
-                    ", field1='" + field1 + '\'' +
-                    ", field2='" + field2 + '\'' +
-                    ", field3='" + field3 + '\'' +
-                    ", field4='" + field4 + '\'' +
-                    ", field5='" + field5 + '\'' +
-                    ", field6='" + field6 + '\'' +
-                    ", field7='" + field7 + '\'' +
-                    ", field8='" + field8 + '\'' +
-                    ", field9='" + field9 + '\'' +
-                    ", field10='" + field10 + '\'' +
-                    ", field11='" + field11 + '\'' +
-                    ", field12='" + field12 + '\'' +
-                    ", field13='" + field13 + '\'' +
-                    '}';
+            return "State for message{" + "id="
+                    + id + ", field1='"
+                    + field1 + '\'' + ", field2='"
+                    + field2 + '\'' + ", field3='"
+                    + field3 + '\'' + ", field4='"
+                    + field4 + '\'' + ", field5='"
+                    + field5 + '\'' + ", field6='"
+                    + field6 + '\'' + ", field7='"
+                    + field7 + '\'' + ", field8='"
+                    + field8 + '\'' + ", field9='"
+                    + field9 + '\'' + ", field10='"
+                    + field10 + '\'' + ", field11='"
+                    + field11 + '\'' + ", field12='"
+                    + field12 + '\'' + ", field13='"
+                    + field13 + '\'' + '}';
         }
     }
 
@@ -266,7 +297,21 @@ public class Message {
             this.id = id;
         }
 
-        private Builder(long id, String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9, String field10, String field11, String field12, ObjectForMessage field13) {
+        private Builder(
+                long id,
+                String field1,
+                String field2,
+                String field3,
+                String field4,
+                String field5,
+                String field6,
+                String field7,
+                String field8,
+                String field9,
+                String field10,
+                String field11,
+                String field12,
+                ObjectForMessage field13) {
             this.id = id;
             this.field1 = field1;
             this.field2 = field2;
@@ -345,12 +390,12 @@ public class Message {
 
         public Builder field13(ObjectForMessage field13) {
 
-            if(field13 != null) {
+            if (field13 != null) {
                 this.field13 = new ObjectForMessage();
 
                 var data = field13.getData();
 
-                if(data != null) {
+                if (data != null) {
                     this.field13.setData(List.copyOf(field13.getData()));
                 }
             }
@@ -359,7 +404,9 @@ public class Message {
         }
 
         public Message build() {
-            return new Message(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13);
+            return new Message(
+                    id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11,
+                    field12, field13);
         }
     }
 }

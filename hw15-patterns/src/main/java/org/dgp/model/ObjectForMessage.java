@@ -16,7 +16,7 @@ public class ObjectForMessage {
 
     @Override
     public String toString() {
-        if(data == null) {
+        if (data == null) {
             return "";
         }
 

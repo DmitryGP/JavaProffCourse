@@ -1,18 +1,21 @@
 package org.dgp;
 
+import java.util.List;
 import org.dgp.handler.ComplexProcessor;
 import org.dgp.listener.ListenerPrinterConsole;
 import org.dgp.model.Message;
 import org.dgp.processor.LoggerProcessor;
 import org.dgp.processor.ProcessorConcatFields;
 import org.dgp.processor.ProcessorUpperField10;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Demo {
+
+    private static Logger logger = LoggerFactory.getLogger(Demo.class);
+
     public static void main(String[] args) {
-        var processors = List.of(new ProcessorConcatFields(),
-                new LoggerProcessor(new ProcessorUpperField10()));
+        var processors = List.of(new ProcessorConcatFields(), new LoggerProcessor(new ProcessorUpperField10()));
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var listenerPrinter = new ListenerPrinterConsole();
@@ -27,7 +30,8 @@ public class Demo {
                 .build();
 
         var result = complexProcessor.handle(message);
-        System.out.println("result:" + result);
+
+        logger.atInfo().setMessage("result: {}").addArgument(result).log();
 
         complexProcessor.removeListener(listenerPrinter);
     }

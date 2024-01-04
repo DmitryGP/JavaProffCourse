@@ -1,12 +1,11 @@
 package org.dgp.handler;
 
-import org.dgp.listener.Listener;
-import org.dgp.model.Message;
-import org.dgp.processor.Processor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import org.dgp.listener.Listener;
+import org.dgp.model.Message;
+import org.dgp.processor.Processor;
 
 public class ComplexProcessor implements Handler {
 
