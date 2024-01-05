@@ -30,3 +30,4 @@ include("hw08-gc:homework")
 findProject(":hw08-gc:homework")?.name = "homework"
 include("hw10-bytecode")
 include("hw12-solid")
+include("hw16-io")
