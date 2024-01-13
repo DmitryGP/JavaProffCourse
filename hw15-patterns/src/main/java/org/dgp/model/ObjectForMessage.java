@@ -1,5 +1,6 @@
 package org.dgp.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,5 +22,17 @@ public class ObjectForMessage {
         }
 
         return Arrays.toString(data.toArray());
+    }
+
+    public static ObjectForMessage clone(ObjectForMessage o) {
+        if (o != null) {
+            ObjectForMessage clone = new ObjectForMessage();
+
+            clone.setData(new ArrayList<>(List.copyOf(o.data)));
+
+            return clone;
+        }
+
+        return null;
     }
 }
