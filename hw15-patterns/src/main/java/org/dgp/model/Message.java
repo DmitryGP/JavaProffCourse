@@ -385,7 +385,7 @@ public class Message {
         }
 
         public Builder field13(ObjectForMessage field13) {
-            this.field13 = ObjectForMessage.clone(field13);
+            this.field13 = field13;
             return this;
         }
 
