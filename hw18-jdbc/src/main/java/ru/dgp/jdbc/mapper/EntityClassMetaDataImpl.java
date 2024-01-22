@@ -61,7 +61,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             var idFld = Arrays.stream(fields)
                     .filter(f -> f.isAnnotationPresent(Id.class))
                     .findFirst();
-            idField = idFld.orElseThrow(() -> new RuntimeException("No id field."));
+            idField = idFld.orElseThrow(() -> new EntityClassMetaDataException("No id field."));
         }
 
         return idField;

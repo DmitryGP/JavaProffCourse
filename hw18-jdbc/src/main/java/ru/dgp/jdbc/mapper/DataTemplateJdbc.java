@@ -3,6 +3,7 @@ package ru.dgp.jdbc.mapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,13 +41,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 if (rs.next()) {
 
                     var args = allFields.stream()
-                            .map(f -> {
-                                try {
-                                    return rs.getObject(f.getName());
-                                } catch (SQLException e) {
-                                    throw new DataTemplateException(e);
-                                }
-                            })
+                            .map(f -> getResultSetValue(rs, f))
                             .toList();
 
                     return constructor.newInstance(args.toArray());
@@ -57,6 +52,14 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 throw new DataTemplateException(e);
             }
         });
+    }
+
+    private static Object getResultSetValue(ResultSet rs, Field f) {
+        try {
+            return rs.getObject(f.getName());
+        } catch (SQLException e) {
+            throw new DataTemplateException(e);
+        }
     }
 
     @Override
@@ -74,13 +77,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                         while (rs.next()) {
 
                             var args = allFields.stream()
-                                    .map(f -> {
-                                        try {
-                                            return rs.getObject(f.getName());
-                                        } catch (SQLException e) {
-                                            throw new DataTemplateException(e);
-                                        }
-                                    })
+                                    .map(f -> getResultSetValue(rs, f))
                                     .toList();
 
                             entityList.add(constructor.newInstance(args.toArray()));
@@ -98,59 +95,44 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     }
 
     @Override
-    @SuppressWarnings("java:S3011")
     public long insert(Connection connection, T obj) {
         var query = entitySQLMetaData.getInsertSql();
         var fieldsToInsert = entityClassMetaData.getFieldsWithoutId();
 
-        var paramValues = fieldsToInsert.stream()
-                .map(f -> {
-                    try {
-                        f.setAccessible(true);
-                        return f.get(obj);
-                    } catch (IllegalAccessException e) {
-                        throw new DataTemplateException(e);
-                    } finally {
-                        f.setAccessible(false);
-                    }
-                })
-                .toList();
+        var paramValues =
+                fieldsToInsert.stream().map(f -> getFieldValue(f, obj)).toList();
 
         return dbExecutor.executeStatement(connection, query, paramValues);
     }
 
     @Override
-    @SuppressWarnings("java:S3011")
     public void update(Connection connection, T obj) {
         var query = entitySQLMetaData.getInsertSql();
         var fieldsToInsert = entityClassMetaData.getFieldsWithoutId();
         Object idValue;
         Field idField = entityClassMetaData.getIdField();
 
-        try {
-            idField.setAccessible(true);
-            idValue = idField.get(obj);
-        } catch (IllegalAccessException e) {
-            throw new DataTemplateException(e);
-        } finally {
-            idField.setAccessible(false);
-        }
+        idValue = getFieldValue(idField, obj);
 
-        var paramValues = fieldsToInsert.stream()
-                .map(f -> {
-                    try {
-                        f.setAccessible(true);
-                        return f.get(obj);
-                    } catch (IllegalAccessException e) {
-                        throw new DataTemplateException(e);
-                    } finally {
-                        f.setAccessible(false);
-                    }
-                })
-                .toList();
+        var paramValues =
+                fieldsToInsert.stream().map(f -> getFieldValue(f, obj)).toList();
 
         paramValues.add(idValue);
 
         dbExecutor.executeStatement(connection, query, paramValues);
+    }
+
+    @SuppressWarnings("java:S3011")
+    private static Object getFieldValue(Field field, Object obj) {
+        Object idValue;
+        try {
+            field.setAccessible(true);
+            idValue = field.get(obj);
+        } catch (IllegalAccessException e) {
+            throw new DataTemplateException(e);
+        } finally {
+            field.setAccessible(false);
+        }
+        return idValue;
     }
 }

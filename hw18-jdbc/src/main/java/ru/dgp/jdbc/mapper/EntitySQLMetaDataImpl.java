@@ -47,9 +47,9 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
         var columnNames = String.join(", ", fieldNames);
         var replaces = IntStream.range(0, fieldNames.size()).mapToObj(i -> "?").toList();
-        var params = String.join(", ", replaces);
+        var paramPlaces = String.join(", ", replaces);
 
-        return "insert into %s (%s) values (%s)".formatted(tableName, columnNames, params);
+        return "insert into %s (%s) values (%s)".formatted(tableName, columnNames, paramPlaces);
     }
 
     @Override
@@ -67,8 +67,8 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
         var idFieldName = idField.getName();
 
-        var assignments = fieldNames.stream().map("%s = ?"::formatted).toList();
-        var params = String.join(", ", assignments);
+        var sets = fieldNames.stream().map("%s = ?"::formatted).toList();
+        var params = String.join(", ", sets);
 
         return "update %s set %s where %s = ?".formatted(tableName, params, idFieldName);
     }
