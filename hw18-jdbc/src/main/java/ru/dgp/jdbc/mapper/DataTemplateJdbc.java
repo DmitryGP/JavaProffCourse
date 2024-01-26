@@ -1,5 +1,6 @@
 package ru.dgp.jdbc.mapper;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -34,17 +35,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         var query = entitySQLMetaData.getSelectByIdSql();
 
         return dbExecutor.executeSelect(connection, query, List.of(id), rs -> {
-            var allFields = entityClassMetaData.getAllFields();
-            var constructor = entityClassMetaData.getConstructor();
 
             try {
                 if (rs.next()) {
-
-                    var args = allFields.stream()
-                            .map(f -> getResultSetValue(rs, f))
-                            .toList();
-
-                    return constructor.newInstance(args.toArray());
+                    return createInstance(rs);
                 }
 
                 return null;
@@ -52,6 +46,17 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 throw new DataTemplateException(e);
             }
         });
+    }
+
+    private <T> T createInstance(ResultSet rs) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        var allFields = entityClassMetaData.getAllFields();
+        var constructor = entityClassMetaData.getConstructor();
+
+        var args = allFields.stream()
+                .map(f -> getResultSetValue(rs, f))
+                .toList();
+
+        return (T) constructor.newInstance(args.toArray());
     }
 
     private static Object getResultSetValue(ResultSet rs, Field f) {
@@ -68,19 +73,12 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
         return dbExecutor
                 .executeSelect(connection, query, Collections.emptyList(), rs -> {
-                    var allFields = entityClassMetaData.getAllFields();
-                    var constructor = entityClassMetaData.getConstructor();
-
                     var entityList = new ArrayList<T>();
 
                     try {
                         while (rs.next()) {
 
-                            var args = allFields.stream()
-                                    .map(f -> getResultSetValue(rs, f))
-                                    .toList();
-
-                            entityList.add(constructor.newInstance(args.toArray()));
+                            entityList.add(createInstance(rs));
                         }
 
                         return entityList;
