@@ -1,6 +1,5 @@
 package ru.dgp.jdbc.mapper;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -35,7 +34,6 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         var query = entitySQLMetaData.getSelectByIdSql();
 
         return dbExecutor.executeSelect(connection, query, List.of(id), rs -> {
-
             try {
                 if (rs.next()) {
                     return createInstance(rs);
@@ -48,13 +46,12 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         });
     }
 
-    private <T> T createInstance(ResultSet rs) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+    private <T> T createInstance(ResultSet rs)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
         var allFields = entityClassMetaData.getAllFields();
         var constructor = entityClassMetaData.getConstructor();
 
-        var args = allFields.stream()
-                .map(f -> getResultSetValue(rs, f))
-                .toList();
+        var args = allFields.stream().map(f -> getResultSetValue(rs, f)).toList();
 
         return (T) constructor.newInstance(args.toArray());
     }

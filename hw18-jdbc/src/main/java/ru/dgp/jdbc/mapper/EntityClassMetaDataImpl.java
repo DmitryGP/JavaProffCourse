@@ -78,7 +78,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Field getIdField() {
-         return idField;
+        return idField;
     }
 
     @Override
