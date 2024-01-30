@@ -62,25 +62,6 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private T createInstance(ResultSet rs)
-            throws InstantiationException, IllegalAccessException, InvocationTargetException {
-        var allFields = entityClassMetaData.getAllFields();
-        var constructor = entityClassMetaData.getConstructor();
-
-        var args = allFields.stream().map(f -> getResultSetValue(rs, f)).toList();
-
-        return constructor.newInstance(args.toArray());
-    }
-
-    private static Object getResultSetValue(ResultSet rs, Field f) {
-        try {
-            return rs.getObject(f.getName());
-        } catch (SQLException e) {
-            throw new DataTemplateException(e);
-        }
-    }
-
     @Override
     public List<T> findAll(Connection connection) {
         var query = entitySQLMetaData.getSelectAllSql();
@@ -147,6 +128,25 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         dbExecutor.executeStatement(connection, query, paramValues);
 
         cache.put(idValue, obj);
+    }
+
+    @SuppressWarnings("unchecked")
+    private T createInstance(ResultSet rs)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        var allFields = entityClassMetaData.getAllFields();
+        var constructor = entityClassMetaData.getConstructor();
+
+        var args = allFields.stream().map(f -> getResultSetValue(rs, f)).toList();
+
+        return constructor.newInstance(args.toArray());
+    }
+
+    private static Object getResultSetValue(ResultSet rs, Field f) {
+        try {
+            return rs.getObject(f.getName());
+        } catch (SQLException e) {
+            throw new DataTemplateException(e);
+        }
     }
 
     @SuppressWarnings("java:S3011")
