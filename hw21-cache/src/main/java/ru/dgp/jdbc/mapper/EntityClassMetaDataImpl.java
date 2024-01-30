@@ -8,8 +8,6 @@ import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
-    private final Class<T> clazz;
-
     private final String name;
     private final Constructor<T> constructor;
     private final List<Field> fieldsWithoutId;
@@ -17,8 +15,6 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final Field idField;
 
     public EntityClassMetaDataImpl(Class<T> clazz) {
-        this.clazz = clazz;
-
         this.name = clazz.getSimpleName();
         this.constructor = getConstructor(clazz);
         this.idField = getIdField(clazz);
@@ -27,27 +23,24 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     }
 
     private List<Field> getFieldsWithoutId(Class<T> clazz) {
-        List<Field> fieldsWithoutId;
+        List<Field> fldsWithoutId;
         var declaredFields = clazz.getDeclaredFields();
-        fieldsWithoutId = Arrays.stream(declaredFields)
+        fldsWithoutId = Arrays.stream(declaredFields)
                 .filter(f -> !f.isAnnotationPresent(Id.class))
                 .toList();
-        return fieldsWithoutId;
+        return fldsWithoutId;
     }
 
     private Field getIdField(Class<T> clazz) {
-        Field idField;
         var fields = clazz.getDeclaredFields();
         var idFld = Arrays.stream(fields)
                 .filter(f -> f.isAnnotationPresent(Id.class))
                 .findFirst();
-        idField = idFld.orElseThrow(() -> new EntityClassMetaDataException("No id field."));
-
-        return idField;
+        return idFld.orElseThrow(() -> new EntityClassMetaDataException("No id field."));
     }
 
+    @SuppressWarnings("unchecked")
     private Constructor<T> getConstructor(Class<T> clazz) {
-        Constructor<T> constructor;
         var cnstrs = clazz.getConstructors();
 
         Constructor<?> cnstr = null;
@@ -61,8 +54,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             }
         }
 
-        constructor = (Constructor<T>) cnstr;
-        return constructor;
+        return (Constructor<T>) cnstr;
     }
 
     @Override

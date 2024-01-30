@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import ru.dgp.cachehw.MyCache;
 import ru.dgp.core.repository.DataTemplate;
 import ru.dgp.core.repository.DataTemplateException;
 import ru.dgp.core.repository.executor.DbExecutor;
@@ -22,21 +23,36 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final EntityClassMetaData<T> entityClassMetaData;
 
+    private final MyCache<Long, T> cache;
+
     public DataTemplateJdbc(
-            DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, EntityClassMetaData<T> entityClassMetaData) {
+            DbExecutor dbExecutor,
+            EntitySQLMetaData entitySQLMetaData,
+            EntityClassMetaData<T> entityClassMetaData,
+            MyCache<Long, T> cache) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
         this.entityClassMetaData = entityClassMetaData;
+        this.cache = cache;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Optional<T> findById(Connection connection, long id) {
         var query = entitySQLMetaData.getSelectByIdSql();
 
         return dbExecutor.executeSelect(connection, query, List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    return createInstance(rs);
+                    var obj = cache.get(id);
+
+                    if (obj != null) {
+                        return obj;
+                    }
+                    var newObj = createInstance(rs);
+                    cache.put(id, newObj);
+
+                    return newObj;
                 }
 
                 return null;
@@ -44,24 +60,6 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 throw new DataTemplateException(e);
             }
         });
-    }
-
-    private <T> T createInstance(ResultSet rs)
-            throws InstantiationException, IllegalAccessException, InvocationTargetException {
-        var allFields = entityClassMetaData.getAllFields();
-        var constructor = entityClassMetaData.getConstructor();
-
-        var args = allFields.stream().map(f -> getResultSetValue(rs, f)).toList();
-
-        return (T) constructor.newInstance(args.toArray());
-    }
-
-    private static Object getResultSetValue(ResultSet rs, Field f) {
-        try {
-            return rs.getObject(f.getName());
-        } catch (SQLException e) {
-            throw new DataTemplateException(e);
-        }
     }
 
     @Override
@@ -74,7 +72,6 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
                     try {
                         while (rs.next()) {
-
                             entityList.add(createInstance(rs));
                         }
 
@@ -90,6 +87,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     }
 
     @Override
+    @SuppressWarnings("java:S3011")
     public long insert(Connection connection, T obj) {
         var query = entitySQLMetaData.getInsertSql();
         var fieldsToInsert = entityClassMetaData.getFieldsWithoutId();
@@ -97,17 +95,30 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         var paramValues =
                 fieldsToInsert.stream().map(f -> getFieldValue(f, obj)).toList();
 
-        return dbExecutor.executeStatement(connection, query, paramValues);
+        var idValue = dbExecutor.executeStatement(connection, query, paramValues);
+
+        var idField = entityClassMetaData.getIdField();
+        try {
+            idField.setAccessible(true);
+            idField.set(obj, idValue);
+            cache.put(idValue, obj);
+        } catch (IllegalAccessException e) {
+            throw new DataTemplateException(e);
+        } finally {
+            idField.setAccessible(false);
+        }
+
+        return idValue;
     }
 
     @Override
     public void update(Connection connection, T obj) {
         var query = entitySQLMetaData.getInsertSql();
         var fieldsToInsert = entityClassMetaData.getFieldsWithoutId();
-        Object idValue;
+        Long idValue;
         Field idField = entityClassMetaData.getIdField();
 
-        idValue = getFieldValue(idField, obj);
+        idValue = (Long) getFieldValue(idField, obj);
 
         var paramValues =
                 fieldsToInsert.stream().map(f -> getFieldValue(f, obj)).toList();
@@ -115,6 +126,27 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         paramValues.add(idValue);
 
         dbExecutor.executeStatement(connection, query, paramValues);
+
+        cache.put(idValue, obj);
+    }
+
+    @SuppressWarnings("unchecked")
+    private T createInstance(ResultSet rs)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        var allFields = entityClassMetaData.getAllFields();
+        var constructor = entityClassMetaData.getConstructor();
+
+        var args = allFields.stream().map(f -> getResultSetValue(rs, f)).toList();
+
+        return constructor.newInstance(args.toArray());
+    }
+
+    private static Object getResultSetValue(ResultSet rs, Field f) {
+        try {
+            return rs.getObject(f.getName());
+        } catch (SQLException e) {
+            throw new DataTemplateException(e);
+        }
     }
 
     @SuppressWarnings("java:S3011")
