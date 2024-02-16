@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+</head>
+
+<body>
+<style type="text/css">
+.table {
+	width: 80%;
+	margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;
+}
+.table th {
+	font-weight: bold;
+	padding: 5px;
+	background: #efefef;
+	border: 1px solid #dddddd;
+}
+.table td {
+	border: 1px solid #dddddd;
+	padding: 5px;
+}
+</style>
+<h3><img src="img/dot.png" style="width: 15px; height: 15px"/>Создать клиента</h3>
+<form action="clients" method="post">
+    <label>
+        Имя <br/>
+        <input type="text" name="name">
+    </label>
+    <br/>
+    <label>
+        Адрес (улица)<br/>
+        <input type="text" name="address">
+    </label>
+    <br/>
+    <label>
+        Телефоны (через запятую)<br/>
+        <input type="text" name="phones">
+    </label>
+    <br/><br/>
+    <input type="submit" value="Создать">
+</form>
+<h3><img src="img/dot.png" style="width: 15px; height: 15px"/>Список клиентов</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Имя</th>
+            <th>Адрес</th>
+            <th>Телефоны</th>
+        </tr>
+    </thead>
+    <tbody>
+    <#foreach client in clients>
+    <tr class="tableBody">
+        <td>${client.id}</td>
+        <td>${client.name}</td>
+        <td>${client.address}</td>
+        <td>${client.phones}</td>
+    </tr>
+    </#foreach>
+    </tbody>
+</table>
+</body>
+</html>
