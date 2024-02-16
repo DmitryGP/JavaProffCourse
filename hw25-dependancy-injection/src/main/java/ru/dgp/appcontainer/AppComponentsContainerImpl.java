@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import ru.dgp.appcontainer.api.AppComponent;
 import ru.dgp.appcontainer.api.AppComponentsContainer;
 import ru.dgp.appcontainer.api.AppComponentsContainerConfig;
@@ -33,14 +35,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 .filter(m -> m.isAnnotationPresent(AppComponent.class))
                 .toList();
 
-        List<ConfigBeanPresentation> beanPresentations = new ArrayList<>();
-
-        beanMethods.forEach(b -> {
-            var appComponentAnnotation = b.getAnnotation(AppComponent.class);
-
-            beanPresentations.add(
-                    new ConfigBeanPresentation(appComponentAnnotation.order(), appComponentAnnotation.name(), b));
-        });
+        List<ConfigBeanPresentation> beanPresentations = beanMethods.stream()
+                .map(b -> getConfigBeanPresentation(b)).toList();
 
         beanPresentations.stream().sorted(new BeanConfigurationComparator()).forEach(bean -> {
             if (appComponentsByName.get(bean.name) != null) {
@@ -53,6 +49,12 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             appComponentsByName.put(bean.name, obj);
             appComponents.add(obj);
         });
+    }
+
+    private static ConfigBeanPresentation getConfigBeanPresentation(Method b) {
+        var appComponentAnnotation = b.getAnnotation(AppComponent.class);
+        return new ConfigBeanPresentation(appComponentAnnotation.order(),
+                appComponentAnnotation.name(), b);
     }
 
     private static Object createConfig(Class<?> configClass) {
