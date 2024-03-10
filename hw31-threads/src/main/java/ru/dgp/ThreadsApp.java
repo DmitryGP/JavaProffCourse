@@ -15,28 +15,33 @@ public class ThreadsApp {
         new Thread(() -> threadsApp.action(2)).start();
     }
 
+    @SuppressWarnings("java:S2189")
     private synchronized void action(int threadNum) {
         try {
 
             int count = 1;
             short delta = 1;
 
-            while(true) {
-                while(lastThreadNumber == threadNum) {
+            while (true) {
+                while (lastThreadNumber == threadNum) {
                     this.wait();
                 }
 
-                logger.info("Thread [%s]: %d".formatted(threadNum, count));
+                logger.atInfo()
+                        .setMessage("Thread {}: {}")
+                        .addArgument(threadNum)
+                        .addArgument(count)
+                        .log();
 
-                if(count == 10) {
+                if (count == 10) {
                     delta = -1;
                 }
 
-                if(count == 1) {
+                if (count == 1) {
                     delta = 1;
                 }
 
-                count = count + delta ;
+                count = count + delta;
 
                 lastThreadNumber = threadNum;
 
@@ -44,8 +49,7 @@ public class ThreadsApp {
                 notifyAll();
             }
 
-
-        } catch(InterruptedException exc) {
+        } catch (InterruptedException exc) {
             Thread.currentThread().interrupt();
         }
     }
