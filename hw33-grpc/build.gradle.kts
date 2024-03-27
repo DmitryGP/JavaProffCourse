@@ -14,6 +14,7 @@ val errorProneAnnotations: String by project
 val tomcatAnnotationsApi: String by project
 
 dependencies {
+    implementation("ch.qos.logback:logback-classic")
     implementation("io.grpc:grpc-netty")
     implementation("io.grpc:grpc-protobuf")
     implementation("io.grpc:grpc-stub")
