@@ -38,5 +38,11 @@ include("hw25-dependancy-injection")
 include("hw20-hibernate")
 include("hw24-webserver")
 include("hw28-spring-jdbc")
+include("hw32-concurrent-containers")
 include("hw31-threads")
 include("hw33-grpc")
+include("hw37-web-flux")
+include("hw37-web-flux:datastore-service")
+findProject(":hw37-web-flux:datastore-service")?.name = "datastore-service"
+include("hw37-web-flux:client-service")
+findProject(":hw37-web-flux:client-service")?.name = "client-service"
